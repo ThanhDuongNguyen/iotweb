@@ -1,0 +1,29 @@
+﻿@page "/"
+@using iotweb.Data
+@inject IoTService IotService
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+<p>
+    Message:@message
+</p>
+@code
+{
+    private string message;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        IotService.InputMessageReceived += OnInputTelemetryReceived;
+    }
+
+    private void OnInputTelemetryReceived(object sender, IoTDataPoint IoTDataPoint)
+    {
+        message = $"Temperature: {IoTDataPoint.temperature} - Humidity: {IoTDataPoint.humidity}";
+
+        InvokeAsync(() => StateHasChanged());
+    }
+}
